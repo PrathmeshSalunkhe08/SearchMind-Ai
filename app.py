@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import os
 import uuid
 from dotenv import load_dotenv
@@ -15,6 +16,40 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# Permanently pin sidebar toggle button in top-left using JS keepalive
+components.html("""
+<script>
+    function keepSidebarToggleVisible() {
+        try {
+            const parentDoc = window.parent.document;
+            const selectors = [
+                '[data-testid="stSidebarExpandButton"]',
+                '[data-testid="stSidebarCollapseButton"]',
+                'button[aria-label="Open sidebar"]',
+                'button[aria-label="Close sidebar"]'
+            ];
+            selectors.forEach(sel => {
+                const elements = parentDoc.querySelectorAll(sel);
+                elements.forEach(el => {
+                    el.style.setProperty('display', 'flex', 'important');
+                    el.style.setProperty('visibility', 'visible', 'important');
+                    el.style.setProperty('opacity', '1', 'important');
+                    el.style.setProperty('position', 'fixed', 'important');
+                    el.style.setProperty('top', '14px', 'important');
+                    el.style.setProperty('left', '14px', 'important');
+                    el.style.setProperty('z-index', '999999999', 'important');
+                    el.style.setProperty('background', 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)', 'important');
+                    el.style.setProperty('border', '1px solid #c084fc', 'important');
+                    el.style.setProperty('border-radius', '10px', 'important');
+                    el.style.setProperty('color', '#ffffff', 'important');
+                });
+            });
+        } catch (e) {}
+    }
+    setInterval(keepSidebarToggleVisible, 250);
+</script>
+""", height=0)
 
 # Premium UI Styling & Glassmorphic Space-Theme CSS
 st.markdown("""
