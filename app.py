@@ -17,67 +17,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Permanently pin sidebar toggle button in top-left using JS keepalive
-components.html("""
-<script>
-    function fixSidebarToggle() {
-        try {
-            const parentDoc = window.parent.document;
-            
-            // 1. Force header transparent and visible
-            const header = parentDoc.querySelector('header[data-testid="stHeader"], .stAppHeader');
-            if (header) {
-                header.style.setProperty('background', 'transparent', 'important');
-                header.style.setProperty('display', 'block', 'important');
-                header.style.setProperty('visibility', 'visible', 'important');
-                header.style.setProperty('opacity', '1', 'important');
-            }
-
-            // 2. Target both expand and collapse buttons
-            const selectors = [
-                '[data-testid="stSidebarExpandButton"]',
-                '[data-testid="stSidebarCollapseButton"]',
-                'button[aria-label="Open sidebar"]',
-                'button[aria-label="Close sidebar"]',
-                'header button'
-            ];
-
-            selectors.forEach(sel => {
-                const elements = parentDoc.querySelectorAll(sel);
-                elements.forEach(el => {
-                    // Make parent elements visible
-                    let p = el.parentElement;
-                    while (p && p !== parentDoc.body) {
-                        p.style.setProperty('visibility', 'visible', 'important');
-                        p.style.setProperty('opacity', '1', 'important');
-                        if (p.tagName === 'HEADER' || p.getAttribute('data-testid') === 'stHeader') break;
-                        p = p.parentElement;
-                    }
-
-                    // Style the button itself
-                    el.style.setProperty('display', 'inline-flex', 'important');
-                    el.style.setProperty('visibility', 'visible', 'important');
-                    el.style.setProperty('opacity', '1', 'important');
-                    el.style.setProperty('position', 'fixed', 'important');
-                    el.style.setProperty('top', '14px', 'important');
-                    el.style.setProperty('left', '14px', 'important');
-                    el.style.setProperty('z-index', '9999999999', 'important');
-                    el.style.setProperty('background', 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)', 'important');
-                    el.style.setProperty('border', '2px solid #c084fc', 'important');
-                    el.style.setProperty('border-radius', '12px', 'important');
-                    el.style.setProperty('color', '#ffffff', 'important');
-                    el.style.setProperty('box-shadow', '0 4px 20px rgba(124, 58, 237, 0.9)', 'important');
-                    el.style.setProperty('cursor', 'pointer', 'important');
-                    el.style.setProperty('min-width', '44px', 'important');
-                    el.style.setProperty('min-height', '38px', 'important');
-                });
-            });
-        } catch (e) {}
-    }
-    setInterval(fixSidebarToggle, 200);
-</script>
-""", height=0)
-
 # Premium UI Styling & Glassmorphic Space-Theme CSS
 st.markdown("""
 <style>
@@ -91,12 +30,24 @@ st.markdown("""
         color: #f3f4f6 !important;
     }
 
-    /* Header & Navbar Cleanup - transparent header */
+    /* Header Container - transparent and pinned at top left */
     header[data-testid="stHeader"],
     .stAppHeader {
         background: transparent !important;
         background-color: transparent !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
         height: 3.5rem !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        z-index: 99999999 !important;
+        pointer-events: none !important;
+    }
+
+    header[data-testid="stHeader"] * {
+        pointer-events: auto !important;
     }
 
     /* Hide ONLY Unnecessary Streamlit Chrome, Menus, Footers & Manage App Toolbar */
@@ -115,43 +66,43 @@ st.markdown("""
     div[class*="viewerBadge"] {display: none !important;}
     div[data-testid="stToolbarActions"] {display: none !important;}
 
-    /* Pinned ChatGPT-style Sidebar Slider Toggle Button - Bulletproof styling */
-    section[data-testid="stSidebar"] button[data-testid="stSidebarCollapseButton"],
-    header[data-testid="stHeader"] button[data-testid="stSidebarExpandButton"],
+    /* Pinned ChatGPT-style Sidebar Slider Toggle Button (Open & Closed States) */
     button[data-testid="stSidebarCollapseButton"],
     button[data-testid="stSidebarExpandButton"],
+    [data-testid="stSidebarCollapseButton"],
+    [data-testid="stSidebarExpandButton"],
     button[aria-label="Close sidebar"],
     button[aria-label="Open sidebar"],
-    [data-testid="stSidebarCollapseButton"],
-    [data-testid="stSidebarExpandButton"] {
+    header[data-testid="stHeader"] button {
         position: fixed !important;
         top: 14px !important;
         left: 14px !important;
-        z-index: 999999999 !important;
-        display: flex !important;
+        z-index: 9999999999 !important;
+        display: inline-flex !important;
         visibility: visible !important;
         opacity: 1 !important;
         pointer-events: auto !important;
         background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
-        border: 1px solid #c084fc !important;
+        border: 2px solid #c084fc !important;
         border-radius: 12px !important;
         color: #ffffff !important;
         padding: 8px 14px !important;
-        font-weight: 600 !important;
-        box-shadow: 0 4px 20px rgba(124, 58, 237, 0.7) !important;
+        font-weight: 700 !important;
+        box-shadow: 0 4px 25px rgba(124, 58, 237, 0.9) !important;
         cursor: pointer !important;
-        min-width: 44px !important;
-        min-height: 38px !important;
+        min-width: 46px !important;
+        min-height: 40px !important;
     }
 
     button[data-testid="stSidebarCollapseButton"]:hover,
     button[data-testid="stSidebarExpandButton"]:hover,
     button[aria-label="Close sidebar"]:hover,
-    button[aria-label="Open sidebar"]:hover {
+    button[aria-label="Open sidebar"]:hover,
+    header[data-testid="stHeader"] button:hover {
         background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
         border-color: #ffffff !important;
-        box-shadow: 0 0 25px rgba(192, 132, 252, 0.9) !important;
-        transform: scale(1.05) !important;
+        box-shadow: 0 0 30px rgba(192, 132, 252, 1) !important;
+        transform: scale(1.08) !important;
     }
 
     /* Fix Bottom Bar Background (Removes white container strip) */
