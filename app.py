@@ -29,26 +29,21 @@ st.markdown("""
         color: #f3f4f6 !important;
     }
 
-    /* Header & Navbar Cleanup - transparent header allowing click-through to toggle button */
+    /* Header & Navbar Cleanup - transparent header */
     header[data-testid="stHeader"],
     .stAppHeader {
         background: transparent !important;
         background-color: transparent !important;
-        pointer-events: none !important;
-        z-index: 99999 !important;
+        height: 3.5rem !important;
     }
 
-    header[data-testid="stHeader"] * {
-        pointer-events: auto !important;
-    }
-
-    /* Hide Unnecessary Streamlit Chrome, Menus, Footers & Manage App Toolbar */
+    /* Hide ONLY Unnecessary Streamlit Chrome, Menus, Footers & Manage App Toolbar */
     #MainMenu {visibility: hidden !important; display: none !important;}
     footer {visibility: hidden !important; display: none !important;}
-    [data-testid="stToolbar"] {display: none !important; visibility: hidden !important;}
-    [data-testid="stDecoration"] {display: none !important; visibility: hidden !important;}
-    [data-testid="stStatusWidget"] {display: none !important; visibility: hidden !important;}
-    [data-testid="stElementToolbar"] {display: none !important; visibility: hidden !important;}
+    div[data-testid="stToolbar"] {display: none !important; visibility: hidden !important;}
+    div[data-testid="stDecoration"] {display: none !important; visibility: hidden !important;}
+    div[data-testid="stStatusWidget"] {display: none !important; visibility: hidden !important;}
+    div[data-testid="stElementToolbar"] {display: none !important; visibility: hidden !important;}
     [data-testid="stAppViewerToolbar"] {display: none !important; visibility: hidden !important; height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;}
     [data-testid="stManageAppButton"] {display: none !important; visibility: hidden !important; height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;}
     div[class*="stAppViewerToolbar"] {display: none !important; visibility: hidden !important;}
@@ -62,35 +57,31 @@ st.markdown("""
     button[data-testid="stSidebarCollapseButton"],
     button[data-testid="stSidebarExpandButton"],
     button[aria-label="Close sidebar"],
-    button[aria-label="Open sidebar"],
-    [data-testid="stHeader"] button {
+    button[aria-label="Open sidebar"] {
         position: fixed !important;
         top: 14px !important;
         left: 14px !important;
-        z-index: 9999999 !important;
+        z-index: 99999999 !important;
         display: flex !important;
         visibility: visible !important;
         opacity: 1 !important;
         pointer-events: auto !important;
-        background: rgba(15, 12, 30, 0.9) !important;
-        border: 1px solid rgba(192, 132, 252, 0.5) !important;
+        background: rgba(124, 58, 237, 0.4) !important;
+        border: 1px solid #c084fc !important;
         border-radius: 10px !important;
         color: #ffffff !important;
         padding: 8px 12px !important;
-        box-shadow: 0 4px 20px rgba(124, 58, 237, 0.5) !important;
-        backdrop-filter: blur(10px) !important;
-        transition: all 0.2s ease !important;
+        box-shadow: 0 4px 20px rgba(124, 58, 237, 0.6) !important;
         cursor: pointer !important;
     }
 
     button[data-testid="stSidebarCollapseButton"]:hover,
     button[data-testid="stSidebarExpandButton"]:hover,
     button[aria-label="Close sidebar"]:hover,
-    button[aria-label="Open sidebar"]:hover,
-    [data-testid="stHeader"] button:hover {
-        background: rgba(124, 58, 237, 0.6) !important;
-        border-color: #c084fc !important;
-        box-shadow: 0 0 25px rgba(124, 58, 237, 0.8) !important;
+    button[aria-label="Open sidebar"]:hover {
+        background: rgba(124, 58, 237, 0.8) !important;
+        border-color: #ffffff !important;
+        box-shadow: 0 0 25px rgba(192, 132, 252, 0.9) !important;
         transform: scale(1.05) !important;
     }
 
