@@ -101,20 +101,27 @@ st.markdown("""
         background: rgba(124, 58, 237, 0.5);
     }
 
-    /* Main Container Padding */
+    /* Fluid Container & Responsive Layout */
     .block-container {
-        padding-top: 2rem !important;
+        padding-top: 1.5rem !important;
         padding-bottom: 2rem !important;
-        max-width: 900px !important;
+        max-width: min(920px, 95vw) !important;
     }
 
-    /* Mobile Responsiveness & Touch Optimization (< 768px) */
+    /* Desktop (>= 769px): Sidebar handles history natively, hide in-page expander to keep main page clean */
+    @media screen and (min-width: 769px) {
+        div[data-testid="stExpander"] {
+            display: none !important;
+        }
+    }
+
+    /* Mobile Screen Optimization (<= 768px) */
     @media screen and (max-width: 768px) {
         .block-container {
             padding-top: 0.75rem !important;
             padding-bottom: 4.5rem !important;
-            padding-left: 0.6rem !important;
-            padding-right: 0.6rem !important;
+            padding-left: 0.5rem !important;
+            padding-right: 0.5rem !important;
         }
 
         .hero-container {
@@ -124,11 +131,11 @@ st.markdown("""
         }
 
         .hero-title {
-            font-size: 1.85rem !important;
+            font-size: clamp(1.75rem, 6vw, 2.5rem) !important;
         }
 
         .hero-subtitle {
-            font-size: 0.9rem !important;
+            font-size: clamp(0.85rem, 3vw, 1rem) !important;
         }
 
         .hero-badge {
@@ -137,7 +144,7 @@ st.markdown("""
         }
 
         section[data-testid="stSidebar"] {
-            width: 88vw !important;
+            width: 85vw !important;
             max-width: 320px !important;
         }
 
@@ -157,10 +164,15 @@ st.markdown("""
             line-height: 1.6 !important;
         }
 
-        /* Ensure main top nav button is full width on small mobile screens */
+        /* Full width top nav button on small mobile screens */
         button[key="main_top_nav_btn"] {
             width: 100% !important;
             margin-bottom: 0.75rem !important;
+        }
+
+        /* Show in-page history drawer on mobile */
+        div[data-testid="stExpander"] {
+            display: block !important;
         }
     }
 
