@@ -15,7 +15,6 @@ if "sidebar_open" not in st.session_state:
 
 st.set_page_config(
     page_title="SearchMind AI",
-    page_icon="🧠",
     layout="wide",
     initial_sidebar_state="expanded" if st.session_state.sidebar_open else "collapsed"
 )
@@ -405,14 +404,14 @@ agent = get_agent()
 # --- 4. SIDEBAR NAVIGATION ---
 col_title, col_hide = st.sidebar.columns([3, 2])
 with col_title:
-    st.markdown("""<h3 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: #f3f4f6;">🧠 SearchMind</h3>""", unsafe_allow_html=True)
+    st.markdown("""<h3 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: #f3f4f6;">SearchMind</h3>""", unsafe_allow_html=True)
 with col_hide:
-    if st.button("🙈 Hide", key="sidebar_hide_btn"):
+    if st.button("Hide", key="sidebar_hide_btn"):
         st.session_state.sidebar_open = False
         st.rerun()
 
 # "New Chat" button
-if st.sidebar.button("➕ New Chat"):
+if st.sidebar.button("+ New Chat"):
     st.session_state.chat_counter += 1
     new_thread_id = str(uuid.uuid4())
     new_chat_name = f"Chat Session #{st.session_state.chat_counter}"
@@ -424,14 +423,14 @@ if st.sidebar.button("➕ New Chat"):
 st.sidebar.markdown("<hr style='border-color: rgba(255, 255, 255, 0.08); margin: 0.85rem 0;'>", unsafe_allow_html=True)
 
 # Render active chats list
-st.sidebar.markdown("<div class='sidebar-title'>💬 Chat History</div>", unsafe_allow_html=True)
+st.sidebar.markdown("<div class='sidebar-title'>Chat History</div>", unsafe_allow_html=True)
 
 for t_id, name in list(st.session_state.chats.items()):
     col1, col2 = st.sidebar.columns([4, 1])
     is_active = (t_id == st.session_state.thread_id)
     
     # Active session visual indicator
-    display_label = f"💬 {name}" + (" 📍" if is_active else "")
+    display_label = name + (" (Active)" if is_active else "")
     
     # Select Chat
     if col1.button(display_label, key=f"select_{t_id}"):
@@ -440,7 +439,7 @@ for t_id, name in list(st.session_state.chats.items()):
         st.rerun()
         
     # Delete Chat
-    if col2.button("🗑️", key=f"del_{t_id}"):
+    if col2.button("X", key=f"del_{t_id}"):
         # Delete from session dict
         del st.session_state.chats[t_id]
         
@@ -460,7 +459,7 @@ for t_id, name in list(st.session_state.chats.items()):
 
 st.sidebar.markdown("""
 <div class="sidebar-card" style="margin-top: 1.5rem;">
-    <div class="sidebar-title">✨ About SearchMind</div>
+    <div class="sidebar-title">About SearchMind</div>
     <p style="color: #9ca3af; font-size: 0.88rem; line-height: 1.5; margin: 0;">
         An intelligent AI companion powered by real-time web search and conversational memory.
     </p>
@@ -471,13 +470,13 @@ st.sidebar.markdown("""
 if not st.session_state.sidebar_open:
     col_see, _ = st.columns([1, 4])
     with col_see:
-        if st.button("👁️ See History", key="main_see_history_btn"):
+        if st.button("See History", key="main_see_history_btn"):
             st.session_state.sidebar_open = True
             st.rerun()
 
 st.markdown("""
 <div class="hero-container">
-    <div class="hero-badge">🧠 SearchMind AI</div>
+    <div class="hero-badge">SearchMind AI</div>
     <div class="hero-title">SearchMind</div>
     <div class="hero-subtitle">
         Your intelligent AI search assistant for real-time web answers and smart conversations.
