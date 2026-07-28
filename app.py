@@ -29,12 +29,17 @@ st.markdown("""
         color: #f3f4f6 !important;
     }
 
-    /* Header & Navbar Cleanup */
+    /* Header & Navbar Cleanup - transparent header allowing click-through to toggle button */
     header[data-testid="stHeader"],
     .stAppHeader {
         background: transparent !important;
         background-color: transparent !important;
-        height: 0px !important;
+        pointer-events: none !important;
+        z-index: 99999 !important;
+    }
+
+    header[data-testid="stHeader"] * {
+        pointer-events: auto !important;
     }
 
     /* Hide Unnecessary Streamlit Chrome, Menus, Footers & Manage App Toolbar */
@@ -55,27 +60,38 @@ st.markdown("""
 
     /* Pinned ChatGPT-style Sidebar Slider Toggle Button */
     button[data-testid="stSidebarCollapseButton"],
-    button[data-testid="stSidebarExpandButton"] {
+    button[data-testid="stSidebarExpandButton"],
+    button[aria-label="Close sidebar"],
+    button[aria-label="Open sidebar"],
+    [data-testid="stHeader"] button {
         position: fixed !important;
         top: 14px !important;
         left: 14px !important;
-        z-index: 999999 !important;
+        z-index: 9999999 !important;
         display: flex !important;
         visibility: visible !important;
-        background: rgba(124, 58, 237, 0.25) !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        background: rgba(15, 12, 30, 0.9) !important;
         border: 1px solid rgba(192, 132, 252, 0.5) !important;
         border-radius: 10px !important;
         color: #ffffff !important;
         padding: 8px 12px !important;
         box-shadow: 0 4px 20px rgba(124, 58, 237, 0.5) !important;
+        backdrop-filter: blur(10px) !important;
+        transition: all 0.2s ease !important;
         cursor: pointer !important;
     }
 
     button[data-testid="stSidebarCollapseButton"]:hover,
-    button[data-testid="stSidebarExpandButton"]:hover {
+    button[data-testid="stSidebarExpandButton"]:hover,
+    button[aria-label="Close sidebar"]:hover,
+    button[aria-label="Open sidebar"]:hover,
+    [data-testid="stHeader"] button:hover {
         background: rgba(124, 58, 237, 0.6) !important;
         border-color: #c084fc !important;
         box-shadow: 0 0 25px rgba(124, 58, 237, 0.8) !important;
+        transform: scale(1.05) !important;
     }
 
     /* Fix Bottom Bar Background (Removes white container strip) */
