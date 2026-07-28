@@ -22,16 +22,22 @@ st.markdown("""
     /* Import Google Font */
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
-    /* Header layout - transparent header to show ChatGPT-style sidebar toggle */
+    /* Global Body Overrides */
+    html, body, [class*="css"], .stApp {
+        font-family: 'Outfit', sans-serif !important;
+        background: linear-gradient(135deg, #090615 0%, #0d0922 40%, #04020a 100%) !important;
+        color: #f3f4f6 !important;
+    }
+
+    /* Header & Navbar Cleanup */
     header[data-testid="stHeader"],
     .stAppHeader {
         background: transparent !important;
         background-color: transparent !important;
-        height: 3.5rem !important;
-        z-index: 99999 !important;
+        height: 0px !important;
     }
 
-    /* Hide unnecessary header toolbar, actions, status widget, footer & Manage App button */
+    /* Hide Unnecessary Streamlit Chrome, Menus, Footers & Manage App Toolbar */
     #MainMenu {visibility: hidden !important; display: none !important;}
     footer {visibility: hidden !important; display: none !important;}
     [data-testid="stToolbar"] {display: none !important; visibility: hidden !important;}
@@ -47,35 +53,38 @@ st.markdown("""
     div[class*="viewerBadge"] {display: none !important;}
     div[data-testid="stToolbarActions"] {display: none !important;}
 
-    /* Style Sidebar Toggle Button (ChatGPT Sliding Drawer Toggle) */
+    /* Pinned ChatGPT-style Sidebar Slider Toggle Button */
     button[data-testid="stSidebarCollapseButton"],
-    button[data-testid="stSidebarExpandButton"],
-    header[data-testid="stHeader"] button {
+    button[data-testid="stSidebarExpandButton"] {
+        position: fixed !important;
+        top: 14px !important;
+        left: 14px !important;
+        z-index: 999999 !important;
         display: flex !important;
         visibility: visible !important;
-        background: rgba(124, 58, 237, 0.15) !important;
-        border: 1px solid rgba(124, 58, 237, 0.3) !important;
+        background: rgba(124, 58, 237, 0.25) !important;
+        border: 1px solid rgba(192, 132, 252, 0.5) !important;
         border-radius: 10px !important;
-        color: #c084fc !important;
-        transition: all 0.25s ease !important;
-        margin-top: 0.25rem !important;
-        margin-left: 0.25rem !important;
+        color: #ffffff !important;
+        padding: 8px 12px !important;
+        box-shadow: 0 4px 20px rgba(124, 58, 237, 0.5) !important;
+        cursor: pointer !important;
     }
 
     button[data-testid="stSidebarCollapseButton"]:hover,
-    button[data-testid="stSidebarExpandButton"]:hover,
-    header[data-testid="stHeader"] button:hover {
-        background: rgba(124, 58, 237, 0.35) !important;
-        border-color: rgba(192, 132, 252, 0.6) !important;
-        color: #ffffff !important;
-        box-shadow: 0 0 15px rgba(124, 58, 237, 0.4) !important;
+    button[data-testid="stSidebarExpandButton"]:hover {
+        background: rgba(124, 58, 237, 0.6) !important;
+        border-color: #c084fc !important;
+        box-shadow: 0 0 25px rgba(124, 58, 237, 0.8) !important;
     }
 
-    /* Global Body Overrides */
-    html, body, [class*="css"], .stApp {
-        font-family: 'Outfit', sans-serif !important;
-        background: linear-gradient(135deg, #090615 0%, #0d0922 40%, #04020a 100%) !important;
-        color: #f3f4f6 !important;
+    /* Fix Bottom Bar Background (Removes white container strip) */
+    [data-testid="stBottom"],
+    [data-testid="stBottomBlockContainer"],
+    div[class*="stBottom"] {
+        background: transparent !important;
+        background-color: transparent !important;
+        border-top: none !important;
     }
     
     /* Scrollbars customization */
