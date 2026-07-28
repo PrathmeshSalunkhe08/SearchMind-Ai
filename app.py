@@ -22,7 +22,7 @@ st.markdown("""
     /* Import Google Font */
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
-    /* Hide Streamlit Header, Share/Edit/Star Toolbar, Menu & Footer */
+    /* Hide Streamlit Header, Share/Edit/Star Toolbar, Manage App Button, Menu & Footer */
     #MainMenu {visibility: hidden !important; display: none !important;}
     footer {visibility: hidden !important; display: none !important;}
     header {visibility: hidden !important; display: none !important;}
@@ -31,6 +31,11 @@ st.markdown("""
     [data-testid="stDecoration"] {display: none !important; visibility: hidden !important;}
     [data-testid="stStatusWidget"] {display: none !important; visibility: hidden !important;}
     [data-testid="stElementToolbar"] {display: none !important; visibility: hidden !important;}
+    [data-testid="stAppViewerToolbar"] {display: none !important; visibility: hidden !important; height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;}
+    [data-testid="stManageAppButton"] {display: none !important; visibility: hidden !important; height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;}
+    div[class*="stAppViewerToolbar"] {display: none !important; visibility: hidden !important;}
+    div[class*="manageApp"] {display: none !important; visibility: hidden !important;}
+    .stAppViewerToolbar {display: none !important; visibility: hidden !important;}
     .stAppHeader {display: none !important; visibility: hidden !important;}
     .stDeployButton {display: none !important;}
     button[title="View app in Streamlit"] {display: none !important;}
@@ -459,9 +464,12 @@ for msg in history:
 
 # --- 6. USER INPUT HANDLING ---
 if user_input := st.chat_input("Ask me anything..."):
+    # Security: Sanitize user prompt and prevent prompt flood vulnerabilities
+    sanitized_input = user_input.strip()[:4000]
+    
     # Immediately render user prompt on screen
     with st.chat_message("user"):
-        st.markdown(user_input)
+        st.markdown(sanitized_input)
     
     # Process through Agent
     with st.chat_message("assistant"):
@@ -469,13 +477,14 @@ if user_input := st.chat_input("Ask me anything..."):
             try:
                 # Invoke the agent. It retrieves the thread's history automatically.
                 response = agent.invoke(
-                    {"messages": [{"role": "user", "content": user_input}]},
+                    {"messages": [{"role": "user", "content": sanitized_input}]},
                     config
                 )
                 final_reply = clean_content(response["messages"][-1].content)
                 st.markdown(final_reply)
-            except Exception as e:
-                st.error(f"Error: {e}")
+            except Exception:
+                # Secure Error Handling: Do not leak stack traces or internal environment variables
+                st.error("⚠️ An unexpected error occurred while processing your request. Please try again.")
                 
     # Refresh to update the messages list and state
     st.rerun()
