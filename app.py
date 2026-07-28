@@ -10,11 +10,14 @@ from langgraph.checkpoint.memory import MemorySaver
 from langchain_core.messages import HumanMessage, AIMessage
 
 # --- 1. CONFIGURATION & STYLING ---
+if "sidebar_open" not in st.session_state:
+    st.session_state.sidebar_open = True
+
 st.set_page_config(
     page_title="SearchMind AI",
     page_icon="🧠",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded" if st.session_state.sidebar_open else "collapsed"
 )
 
 # Premium UI Styling & Glassmorphic Space-Theme CSS
@@ -66,43 +69,11 @@ st.markdown("""
     div[class*="viewerBadge"] {display: none !important;}
     div[data-testid="stToolbarActions"] {display: none !important;}
 
-    /* Pinned ChatGPT-style Sidebar Slider Toggle Button (Open & Closed States) */
+    /* Hide Streamlit default small collapse/expand arrow buttons to use custom toggle */
     button[data-testid="stSidebarCollapseButton"],
-    button[data-testid="stSidebarExpandButton"],
-    [data-testid="stSidebarCollapseButton"],
-    [data-testid="stSidebarExpandButton"],
-    button[aria-label="Close sidebar"],
-    button[aria-label="Open sidebar"],
-    header[data-testid="stHeader"] button {
-        position: fixed !important;
-        top: 14px !important;
-        left: 14px !important;
-        z-index: 9999999999 !important;
-        display: inline-flex !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-        background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
-        border: 2px solid #c084fc !important;
-        border-radius: 12px !important;
-        color: #ffffff !important;
-        padding: 8px 14px !important;
-        font-weight: 700 !important;
-        box-shadow: 0 4px 25px rgba(124, 58, 237, 0.9) !important;
-        cursor: pointer !important;
-        min-width: 46px !important;
-        min-height: 40px !important;
-    }
-
-    button[data-testid="stSidebarCollapseButton"]:hover,
-    button[data-testid="stSidebarExpandButton"]:hover,
-    button[aria-label="Close sidebar"]:hover,
-    button[aria-label="Open sidebar"]:hover,
-    header[data-testid="stHeader"] button:hover {
-        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
-        border-color: #ffffff !important;
-        box-shadow: 0 0 30px rgba(192, 132, 252, 1) !important;
-        transform: scale(1.08) !important;
+    button[data-testid="stSidebarExpandButton"] {
+        display: none !important;
+        visibility: hidden !important;
     }
 
     /* Fix Bottom Bar Background (Removes white container strip) */
@@ -432,18 +403,16 @@ def get_agent():
 agent = get_agent()
 
 # --- 4. SIDEBAR NAVIGATION ---
-st.sidebar.markdown("""
-<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; padding-top: 0.25rem;">
-    <h3 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: #f3f4f6; display: flex; align-items: center; gap: 8px;">
-        🧠 SearchMind AI
-    </h3>
-</div>
-""", unsafe_allow_html=True)
+col_title, col_hide = st.sidebar.columns([3, 2])
+with col_title:
+    st.markdown("""<h3 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: #f3f4f6;">🧠 SearchMind</h3>""", unsafe_allow_html=True)
+with col_hide:
+    if st.button("🙈 Hide", key="sidebar_hide_btn"):
+        st.session_state.sidebar_open = False
+        st.rerun()
 
-# "New Chat" and "Toggle History" buttons side-by-side
-col_new, col_toggle = st.sidebar.columns([1, 1])
-
-if col_new.button("➕ New Chat"):
+# "New Chat" button
+if st.sidebar.button("➕ New Chat"):
     st.session_state.chat_counter += 1
     new_thread_id = str(uuid.uuid4())
     new_chat_name = f"Chat Session #{st.session_state.chat_counter}"
@@ -452,54 +421,42 @@ if col_new.button("➕ New Chat"):
     st.session_state.chat_name = new_chat_name
     st.rerun()
 
-toggle_icon = "🙈 Hide" if st.session_state.show_history else "👁️ History"
-if col_toggle.button(toggle_icon, key="sidebar_toggle_btn"):
-    st.session_state.show_history = not st.session_state.show_history
-    st.rerun()
-
 st.sidebar.markdown("<hr style='border-color: rgba(255, 255, 255, 0.08); margin: 0.85rem 0;'>", unsafe_allow_html=True)
 
-# Render active chats list if show_history is True
-if st.session_state.show_history:
-    st.sidebar.markdown("<div class='sidebar-title'>💬 Chat History</div>", unsafe_allow_html=True)
+# Render active chats list
+st.sidebar.markdown("<div class='sidebar-title'>💬 Chat History</div>", unsafe_allow_html=True)
 
-    for t_id, name in list(st.session_state.chats.items()):
-        col1, col2 = st.sidebar.columns([4, 1])
-        is_active = (t_id == st.session_state.thread_id)
+for t_id, name in list(st.session_state.chats.items()):
+    col1, col2 = st.sidebar.columns([4, 1])
+    is_active = (t_id == st.session_state.thread_id)
+    
+    # Active session visual indicator
+    display_label = f"💬 {name}" + (" 📍" if is_active else "")
+    
+    # Select Chat
+    if col1.button(display_label, key=f"select_{t_id}"):
+        st.session_state.thread_id = t_id
+        st.session_state.chat_name = name
+        st.rerun()
         
-        # Active session visual indicator
-        display_label = f"💬 {name}" + (" 📍" if is_active else "")
+    # Delete Chat
+    if col2.button("🗑️", key=f"del_{t_id}"):
+        # Delete from session dict
+        del st.session_state.chats[t_id]
         
-        # Select Chat
-        if col1.button(display_label, key=f"select_{t_id}"):
-            st.session_state.thread_id = t_id
-            st.session_state.chat_name = name
-            st.rerun()
-            
-        # Delete Chat
-        if col2.button("🗑️", key=f"del_{t_id}"):
-            # Delete from session dict
-            del st.session_state.chats[t_id]
-            
-            # If we deleted the active chat, switch to the first remaining one
-            if st.session_state.thread_id == t_id:
-                if st.session_state.chats:
-                    first_t_id = list(st.session_state.chats.keys())[0]
-                    st.session_state.thread_id = first_t_id
-                    st.session_state.chat_name = st.session_state.chats[first_t_id]
-                else:
-                    # No chats left, generate a fresh one
-                    st.session_state.thread_id = str(uuid.uuid4())
-                    st.session_state.chat_counter = 1
-                    st.session_state.chat_name = "Chat Session #1"
-                    st.session_state.chats = {st.session_state.thread_id: st.session_state.chat_name}
-            st.rerun()
-else:
-    st.sidebar.markdown("""
-    <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 1rem; text-align: center; color: #9ca3af; font-size: 0.85rem;">
-        💬 Chat history is hidden.<br>Click <strong>👁️ History</strong> above to view your saved chats.
-    </div>
-    """, unsafe_allow_html=True)
+        # If we deleted the active chat, switch to the first remaining one
+        if st.session_state.thread_id == t_id:
+            if st.session_state.chats:
+                first_t_id = list(st.session_state.chats.keys())[0]
+                st.session_state.thread_id = first_t_id
+                st.session_state.chat_name = st.session_state.chats[first_t_id]
+            else:
+                # No chats left, generate a fresh one
+                st.session_state.thread_id = str(uuid.uuid4())
+                st.session_state.chat_counter = 1
+                st.session_state.chat_name = "Chat Session #1"
+                st.session_state.chats = {st.session_state.thread_id: st.session_state.chat_name}
+        st.rerun()
 
 st.sidebar.markdown("""
 <div class="sidebar-card" style="margin-top: 1.5rem;">
@@ -511,6 +468,13 @@ st.sidebar.markdown("""
 """, unsafe_allow_html=True)
 
 # --- 5. MAIN INTERFACE ---
+if not st.session_state.sidebar_open:
+    col_see, _ = st.columns([1, 4])
+    with col_see:
+        if st.button("👁️ See History", key="main_see_history_btn"):
+            st.session_state.sidebar_open = True
+            st.rerun()
+
 st.markdown("""
 <div class="hero-container">
     <div class="hero-badge">🧠 SearchMind AI</div>
