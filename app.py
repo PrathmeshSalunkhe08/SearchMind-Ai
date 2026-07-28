@@ -550,6 +550,43 @@ with col_nav:
         st.session_state.sidebar_open = not st.session_state.sidebar_open
         st.rerun()
 
+# Responsive In-Page History Drawer (Guarantees 100% working History on Mobile Screens)
+if st.session_state.sidebar_open:
+    with st.expander("💬 Saved Chat Sessions & History", expanded=True):
+        col_h_new, col_h_space = st.columns([1, 2])
+        with col_h_new:
+            if st.button("➕ New Chat", key="main_history_new_chat_btn"):
+                st.session_state.chat_counter += 1
+                new_thread_id = str(uuid.uuid4())
+                new_chat_name = f"Chat Session #{st.session_state.chat_counter}"
+                st.session_state.chats[new_thread_id] = new_chat_name
+                st.session_state.thread_id = new_thread_id
+                st.session_state.chat_name = new_chat_name
+                st.rerun()
+                
+        for t_id, name in list(st.session_state.chats.items()):
+            hc1, hc2 = st.columns([4, 1])
+            is_active = (t_id == st.session_state.thread_id)
+            display_label = f"💬 {name}" + (" 📍 (Active)" if is_active else "")
+            
+            if hc1.button(display_label, key=f"main_select_session_{t_id}"):
+                st.session_state.thread_id = t_id
+                st.session_state.chat_name = name
+                st.rerun()
+            if hc2.button("🗑️", key=f"main_del_session_{t_id}"):
+                del st.session_state.chats[t_id]
+                if st.session_state.thread_id == t_id:
+                    if st.session_state.chats:
+                        first_t_id = list(st.session_state.chats.keys())[0]
+                        st.session_state.thread_id = first_t_id
+                        st.session_state.chat_name = st.session_state.chats[first_t_id]
+                    else:
+                        st.session_state.thread_id = str(uuid.uuid4())
+                        st.session_state.chat_counter = 1
+                        st.session_state.chat_name = "Chat Session #1"
+                        st.session_state.chats = {st.session_state.thread_id: st.session_state.chat_name}
+                st.rerun()
+
 st.markdown("""
 <div class="hero-container">
     <div class="hero-badge">🧠 SearchMind AI</div>
