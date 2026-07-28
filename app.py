@@ -20,34 +20,61 @@ st.set_page_config(
 # Permanently pin sidebar toggle button in top-left using JS keepalive
 components.html("""
 <script>
-    function keepSidebarToggleVisible() {
+    function fixSidebarToggle() {
         try {
             const parentDoc = window.parent.document;
+            
+            // 1. Force header transparent and visible
+            const header = parentDoc.querySelector('header[data-testid="stHeader"], .stAppHeader');
+            if (header) {
+                header.style.setProperty('background', 'transparent', 'important');
+                header.style.setProperty('display', 'block', 'important');
+                header.style.setProperty('visibility', 'visible', 'important');
+                header.style.setProperty('opacity', '1', 'important');
+            }
+
+            // 2. Target both expand and collapse buttons
             const selectors = [
                 '[data-testid="stSidebarExpandButton"]',
                 '[data-testid="stSidebarCollapseButton"]',
                 'button[aria-label="Open sidebar"]',
-                'button[aria-label="Close sidebar"]'
+                'button[aria-label="Close sidebar"]',
+                'header button'
             ];
+
             selectors.forEach(sel => {
                 const elements = parentDoc.querySelectorAll(sel);
                 elements.forEach(el => {
-                    el.style.setProperty('display', 'flex', 'important');
+                    // Make parent elements visible
+                    let p = el.parentElement;
+                    while (p && p !== parentDoc.body) {
+                        p.style.setProperty('visibility', 'visible', 'important');
+                        p.style.setProperty('opacity', '1', 'important');
+                        if (p.tagName === 'HEADER' || p.getAttribute('data-testid') === 'stHeader') break;
+                        p = p.parentElement;
+                    }
+
+                    // Style the button itself
+                    el.style.setProperty('display', 'inline-flex', 'important');
                     el.style.setProperty('visibility', 'visible', 'important');
                     el.style.setProperty('opacity', '1', 'important');
                     el.style.setProperty('position', 'fixed', 'important');
                     el.style.setProperty('top', '14px', 'important');
                     el.style.setProperty('left', '14px', 'important');
-                    el.style.setProperty('z-index', '999999999', 'important');
+                    el.style.setProperty('z-index', '9999999999', 'important');
                     el.style.setProperty('background', 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)', 'important');
-                    el.style.setProperty('border', '1px solid #c084fc', 'important');
-                    el.style.setProperty('border-radius', '10px', 'important');
+                    el.style.setProperty('border', '2px solid #c084fc', 'important');
+                    el.style.setProperty('border-radius', '12px', 'important');
                     el.style.setProperty('color', '#ffffff', 'important');
+                    el.style.setProperty('box-shadow', '0 4px 20px rgba(124, 58, 237, 0.9)', 'important');
+                    el.style.setProperty('cursor', 'pointer', 'important');
+                    el.style.setProperty('min-width', '44px', 'important');
+                    el.style.setProperty('min-height', '38px', 'important');
                 });
             });
         } catch (e) {}
     }
-    setInterval(keepSidebarToggleVisible, 250);
+    setInterval(fixSidebarToggle, 200);
 </script>
 """, height=0)
 
