@@ -108,6 +108,56 @@ st.markdown("""
         max-width: 900px !important;
     }
 
+    /* Mobile Responsiveness & Touch Optimization (< 768px) */
+    @media screen and (max-width: 768px) {
+        .block-container {
+            padding-top: 0.75rem !important;
+            padding-bottom: 4.5rem !important;
+            padding-left: 0.6rem !important;
+            padding-right: 0.6rem !important;
+        }
+
+        .hero-container {
+            padding: 1.25rem 0.85rem !important;
+            margin-bottom: 1.25rem !important;
+            border-radius: 16px !important;
+        }
+
+        .hero-title {
+            font-size: 1.85rem !important;
+        }
+
+        .hero-subtitle {
+            font-size: 0.9rem !important;
+        }
+
+        .hero-badge {
+            font-size: 0.75rem !important;
+            padding: 4px 12px !important;
+        }
+
+        section[data-testid="stSidebar"] {
+            width: 88vw !important;
+            max-width: 320px !important;
+        }
+
+        section[data-testid="stSidebar"] div[data-testid="stHorizontalBlock"] {
+            flex-wrap: nowrap !important;
+            gap: 6px !important;
+        }
+
+        div[data-testid="stChatMessage"] {
+            padding: 0.85rem !important;
+            margin-bottom: 1rem !important;
+            border-radius: 14px !important;
+        }
+
+        .stMarkdown p, .stMarkdown li {
+            font-size: 0.95rem !important;
+            line-height: 1.6 !important;
+        }
+    }
+
     /* Title Block Header */
     .hero-container {
         display: flex;
@@ -469,7 +519,7 @@ st.sidebar.markdown("""
 
 # --- 5. MAIN INTERFACE ---
 if not st.session_state.sidebar_open:
-    col_see, _ = st.columns([1, 4])
+    col_see, _ = st.columns([2, 3])
     with col_see:
         if st.button("See History", key="main_see_history_btn"):
             st.session_state.sidebar_open = True
