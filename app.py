@@ -156,6 +156,31 @@ st.markdown("""
             font-size: 0.95rem !important;
             line-height: 1.6 !important;
         }
+
+        /* Ensure main top nav button is full width on small mobile screens */
+        button[key="main_top_nav_btn"] {
+            width: 100% !important;
+            margin-bottom: 0.75rem !important;
+        }
+    }
+
+    /* Top Main Page Navigation Button */
+    button[key="main_top_nav_btn"] {
+        background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
+        color: #ffffff !important;
+        border: 1px solid #c084fc !important;
+        border-radius: 12px !important;
+        font-weight: 600 !important;
+        padding: 0.5rem 1.2rem !important;
+        box-shadow: 0 4px 20px rgba(124, 58, 237, 0.6) !important;
+        margin-bottom: 1rem !important;
+        cursor: pointer !important;
+    }
+
+    button[key="main_top_nav_btn"]:hover {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+        border-color: #ffffff !important;
+        box-shadow: 0 0 25px rgba(192, 132, 252, 0.9) !important;
     }
 
     /* Title Block Header */
@@ -518,12 +543,12 @@ st.sidebar.markdown("""
 """, unsafe_allow_html=True)
 
 # --- 5. MAIN INTERFACE ---
-if not st.session_state.sidebar_open:
-    col_see, _ = st.columns([2, 3])
-    with col_see:
-        if st.button("See History", key="main_see_history_btn"):
-            st.session_state.sidebar_open = True
-            st.rerun()
+col_nav, _ = st.columns([2, 3])
+with col_nav:
+    nav_btn_label = "Hide History" if st.session_state.sidebar_open else "See History"
+    if st.button(nav_btn_label, key="main_top_nav_btn"):
+        st.session_state.sidebar_open = not st.session_state.sidebar_open
+        st.rerun()
 
 st.markdown("""
 <div class="hero-container">
