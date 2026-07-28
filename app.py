@@ -27,10 +27,12 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
     /* Global Body Overrides */
-    html, body, [class*="css"], .stApp {
+    html, body, [class*="css"], .stApp, [data-testid="stAppViewContainer"] {
         font-family: 'Outfit', sans-serif !important;
         background: linear-gradient(135deg, #090615 0%, #0d0922 40%, #04020a 100%) !important;
         color: #f3f4f6 !important;
+        overflow-x: hidden !important;
+        max-width: 100vw !important;
     }
 
     /* Header Container - transparent and pinned at top left */
@@ -176,39 +178,16 @@ st.markdown("""
         }
     }
 
-    /* Expander card styling & horizontal row locking for mobile history */
+    /* Expander card styling for mobile history drawer */
     div[data-testid="stExpander"] {
-        background: rgba(15, 12, 30, 0.85) !important;
+        background: rgba(15, 12, 30, 0.95) !important;
         border: 1px solid rgba(124, 58, 237, 0.3) !important;
         border-radius: 16px !important;
         box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4) !important;
         backdrop-filter: blur(20px) !important;
         margin-bottom: 1.5rem !important;
-    }
-
-    div[data-testid="stExpander"] div[data-testid="stHorizontalBlock"] {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-        gap: 8px !important;
-        margin-bottom: 6px !important;
-    }
-
-    div[data-testid="stExpander"] div[data-testid="column"]:first-child {
-        flex: 1 1 auto !important;
-        min-width: 0 !important;
-    }
-
-    div[data-testid="stExpander"] div[data-testid="column"]:last-child {
-        flex: 0 0 46px !important;
-        min-width: 46px !important;
-    }
-
-    div[data-testid="stExpander"] div[data-testid="column"] button {
-        width: 100% !important;
-        margin-top: 0 !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
     }
 
     /* Title Block Header */
@@ -593,15 +572,15 @@ if st.session_state.sidebar_open:
                 st.rerun()
                 
         for t_id, name in list(st.session_state.chats.items()):
-            hc1, hc2 = st.columns([5, 1])
+            hc1, hc2 = st.columns([4, 1])
             is_active = (t_id == st.session_state.thread_id)
             display_label = f"💬 {name}" + (" 📍 (Active)" if is_active else "")
             
-            if hc1.button(display_label, key=f"main_select_session_{t_id}"):
+            if hc1.button(display_label, key=f"main_select_session_{t_id}", use_container_width=True):
                 st.session_state.thread_id = t_id
                 st.session_state.chat_name = name
                 st.rerun()
-            if hc2.button("🗑️", key=f"main_del_session_{t_id}"):
+            if hc2.button("🗑️", key=f"main_del_session_{t_id}", use_container_width=True):
                 del st.session_state.chats[t_id]
                 if st.session_state.thread_id == t_id:
                     if st.session_state.chats:
