@@ -10,3 +10,4 @@ ddgs
 google-generativeai
 langgraph
 streamlit
+python-dotenv

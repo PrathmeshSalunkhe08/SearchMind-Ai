@@ -276,9 +276,20 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Load environment variables
+# Load environment variables (Local .env & Streamlit Cloud Secrets)
 dotenv_path = os.path.join(os.path.dirname(__file__), ".env")
-load_dotenv(dotenv_path=dotenv_path)
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path=dotenv_path)
+
+# Sync Streamlit Cloud secrets into os.environ if present
+try:
+    if hasattr(st, "secrets"):
+        if "GOOGLE_API_KEY" in st.secrets and not os.getenv("GOOGLE_API_KEY"):
+            os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
+        if "SERPER_API_KEY" in st.secrets and not os.getenv("SERPER_API_KEY"):
+            os.environ["SERPER_API_KEY"] = st.secrets["SERPER_API_KEY"]
+except Exception:
+    pass
 
 # --- 2. STATE INITIALIZATION ---
 # LangGraph memory saver checkpoint (persists in Streamlit's session state)
@@ -305,7 +316,7 @@ if "chats" not in st.session_state:
 def get_agent():
     # Verify keys
     if not os.getenv("GOOGLE_API_KEY") or not os.getenv("SERPER_API_KEY"):
-        st.error("Error: Missing GOOGLE_API_KEY or SERPER_API_KEY in your .env file.")
+        st.error("⚠️ Missing API Keys! Please configure GOOGLE_API_KEY and SERPER_API_KEY in your .env file or Streamlit Cloud Secrets.")
         st.stop()
 
     search = GoogleSerperAPIWrapper()
