@@ -53,33 +53,40 @@ st.markdown("""
     div[class*="viewerBadge"] {display: none !important;}
     div[data-testid="stToolbarActions"] {display: none !important;}
 
-    /* Pinned ChatGPT-style Sidebar Slider Toggle Button */
+    /* Pinned ChatGPT-style Sidebar Slider Toggle Button - Bulletproof styling */
+    section[data-testid="stSidebar"] button[data-testid="stSidebarCollapseButton"],
+    header[data-testid="stHeader"] button[data-testid="stSidebarExpandButton"],
     button[data-testid="stSidebarCollapseButton"],
     button[data-testid="stSidebarExpandButton"],
     button[aria-label="Close sidebar"],
-    button[aria-label="Open sidebar"] {
+    button[aria-label="Open sidebar"],
+    [data-testid="stSidebarCollapseButton"],
+    [data-testid="stSidebarExpandButton"] {
         position: fixed !important;
         top: 14px !important;
         left: 14px !important;
-        z-index: 99999999 !important;
+        z-index: 999999999 !important;
         display: flex !important;
         visibility: visible !important;
         opacity: 1 !important;
         pointer-events: auto !important;
-        background: rgba(124, 58, 237, 0.4) !important;
+        background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
         border: 1px solid #c084fc !important;
-        border-radius: 10px !important;
+        border-radius: 12px !important;
         color: #ffffff !important;
-        padding: 8px 12px !important;
-        box-shadow: 0 4px 20px rgba(124, 58, 237, 0.6) !important;
+        padding: 8px 14px !important;
+        font-weight: 600 !important;
+        box-shadow: 0 4px 20px rgba(124, 58, 237, 0.7) !important;
         cursor: pointer !important;
+        min-width: 44px !important;
+        min-height: 38px !important;
     }
 
     button[data-testid="stSidebarCollapseButton"]:hover,
     button[data-testid="stSidebarExpandButton"]:hover,
     button[aria-label="Close sidebar"]:hover,
     button[aria-label="Open sidebar"]:hover {
-        background: rgba(124, 58, 237, 0.8) !important;
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
         border-color: #ffffff !important;
         box-shadow: 0 0 25px rgba(192, 132, 252, 0.9) !important;
         transform: scale(1.05) !important;
