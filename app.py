@@ -22,6 +22,21 @@ st.markdown("""
     /* Import Google Font */
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
+    /* Hide Streamlit Header, Share/Edit/Star Toolbar, Menu & Footer */
+    #MainMenu {visibility: hidden !important; display: none !important;}
+    footer {visibility: hidden !important; display: none !important;}
+    header {visibility: hidden !important; display: none !important;}
+    [data-testid="stHeader"] {display: none !important; visibility: hidden !important;}
+    [data-testid="stToolbar"] {display: none !important; visibility: hidden !important;}
+    [data-testid="stDecoration"] {display: none !important; visibility: hidden !important;}
+    [data-testid="stStatusWidget"] {display: none !important; visibility: hidden !important;}
+    [data-testid="stElementToolbar"] {display: none !important; visibility: hidden !important;}
+    .stAppHeader {display: none !important; visibility: hidden !important;}
+    .stDeployButton {display: none !important;}
+    button[title="View app in Streamlit"] {display: none !important;}
+    div[class*="viewerBadge"] {display: none !important;}
+    div[data-testid="stToolbarActions"] {display: none !important;}
+
     /* Global Body Overrides */
     html, body, [class*="css"], .stApp {
         font-family: 'Outfit', sans-serif !important;
@@ -392,25 +407,14 @@ for t_id, name in list(st.session_state.chats.items()):
                 st.session_state.chats = {st.session_state.thread_id: st.session_state.chat_name}
         st.rerun()
 
-st.sidebar.markdown(f"""
+st.sidebar.markdown("""
 <div class="sidebar-card" style="margin-top: 1.5rem;">
-    <div class="sidebar-title">🤖 Technology</div>
-    <ul style="padding-left: 1rem; color: #9ca3af; font-size: 0.9rem;">
-        <li>LangGraph Memory</li>
-        <li>Gemini 3.5 Flash-lite</li>
-        <li>Google Serper Search</li>
-    </ul>
+    <div class="sidebar-title">✨ About SearchMind</div>
+    <p style="color: #9ca3af; font-size: 0.88rem; line-height: 1.5; margin: 0;">
+        An intelligent AI companion powered by real-time web search and conversational memory.
+    </p>
 </div>
 """, unsafe_allow_html=True)
-
-# Expandable technical details at the bottom of the sidebar
-with st.sidebar.expander("⚙️ Technical Details"):
-    st.markdown(f"""
-    <div style="font-size: 0.8rem; color: #9ca3af;">
-        <strong>Active Thread ID:</strong>
-        <div class="thread-id-display">{st.session_state.thread_id}</div>
-    </div>
-    """, unsafe_allow_html=True)
 
 # --- 5. MAIN INTERFACE ---
 st.markdown("""
@@ -418,7 +422,7 @@ st.markdown("""
     <div class="hero-badge">🧠 SearchMind AI</div>
     <div class="hero-title">SearchMind</div>
     <div class="hero-subtitle">
-        Cognitive web-search companion with stateful thread memory.
+        Your intelligent AI search assistant for real-time web answers and smart conversations.
     </div>
 </div>
 """, unsafe_allow_html=True)
