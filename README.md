@@ -10,9 +10,10 @@
 [![Google Gemini 3.5](https://img.shields.io/badge/Google_Gemini-3.5_Flash_Lite-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://aistudio.google.com/)
 [![Streamlit UI](https://img.shields.io/badge/Streamlit-Glassmorphic_UI-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![Serper API](https://img.shields.io/badge/Google_Search-Serper_API-00C853?style=for-the-badge&logo=google&logoColor=white)](https://serper.dev/)
+[![Author: Prathmesh Salunkhe](https://img.shields.io/badge/Author-Prathmesh_Salunkhe-7c3aed?style=for-the-badge&logo=github&logoColor=white)](https://github.com/PrathmeshSalunkhe08)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
-[Features](#-key-features) • [Architecture](#-architecture--react-workflow) • [Installation](#-installation--setup) • [Usage](#-running-the-application) • [Portfolio Showcase](#-engineering--interview-highlights)
+[Features](#-key-features) • [Architecture](#-architecture--react-workflow) • [Installation](#-installation--setup) • [Usage](#-running-the-application) • [Portfolio Showcase](#-engineering--interview-highlights) • [Author & Copyright](#-author--copyright)
 
 </div>
 
@@ -196,14 +197,25 @@ Contributions are welcome! If you'd like to improve SearchMind AI:
 
 ---
 
-## 📜 License
+## 👤 Author & Copyright
 
-Distributed under the **MIT License**. See `LICENSE` for more information.
+Designed, engineered, and maintained by **Prathmesh Salunkhe**.
+
+* **GitHub**: [@PrathmeshSalunkhe08](https://github.com/PrathmeshSalunkhe08)
+* **Repository**: [PrathmeshSalunkhe08/SearchMind-Ai](https://github.com/PrathmeshSalunkhe08/SearchMind-Ai)
+
+---
+
+## 📜 License & Copyright Notice
+
+Copyright © 2026 **Prathmesh Salunkhe**. All Rights Reserved.
+
+Distributed under the **MIT License**. See [`LICENSE`](file:///c:/Users/hp/OneDrive/Desktop/AI%20AGENT/LICENSE) for full details.
 
 ---
 
 <div align="center">
 
-**Built with ❤️ using LangGraph, Google Gemini, Serper & Streamlit**
+**SearchMind AI © 2026 | Created with ❤️ by [Prathmesh Salunkhe](https://github.com/PrathmeshSalunkhe08)**
 
 </div>
