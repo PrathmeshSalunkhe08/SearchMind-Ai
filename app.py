@@ -22,11 +22,18 @@ st.markdown("""
     /* Import Google Font */
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
-    /* Hide Streamlit Header, Share/Edit/Star Toolbar, Manage App Button, Menu & Footer */
+    /* Header layout - transparent header to show ChatGPT-style sidebar toggle */
+    header[data-testid="stHeader"],
+    .stAppHeader {
+        background: transparent !important;
+        background-color: transparent !important;
+        height: 3.5rem !important;
+        z-index: 99999 !important;
+    }
+
+    /* Hide unnecessary header toolbar, actions, status widget, footer & Manage App button */
     #MainMenu {visibility: hidden !important; display: none !important;}
     footer {visibility: hidden !important; display: none !important;}
-    header {visibility: hidden !important; display: none !important;}
-    [data-testid="stHeader"] {display: none !important; visibility: hidden !important;}
     [data-testid="stToolbar"] {display: none !important; visibility: hidden !important;}
     [data-testid="stDecoration"] {display: none !important; visibility: hidden !important;}
     [data-testid="stStatusWidget"] {display: none !important; visibility: hidden !important;}
@@ -35,12 +42,34 @@ st.markdown("""
     [data-testid="stManageAppButton"] {display: none !important; visibility: hidden !important; height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;}
     div[class*="stAppViewerToolbar"] {display: none !important; visibility: hidden !important;}
     div[class*="manageApp"] {display: none !important; visibility: hidden !important;}
-    .stAppViewerToolbar {display: none !important; visibility: hidden !important;}
-    .stAppHeader {display: none !important; visibility: hidden !important;}
     .stDeployButton {display: none !important;}
     button[title="View app in Streamlit"] {display: none !important;}
     div[class*="viewerBadge"] {display: none !important;}
     div[data-testid="stToolbarActions"] {display: none !important;}
+
+    /* Style Sidebar Toggle Button (ChatGPT Sliding Drawer Toggle) */
+    button[data-testid="stSidebarCollapseButton"],
+    button[data-testid="stSidebarExpandButton"],
+    header[data-testid="stHeader"] button {
+        display: flex !important;
+        visibility: visible !important;
+        background: rgba(124, 58, 237, 0.15) !important;
+        border: 1px solid rgba(124, 58, 237, 0.3) !important;
+        border-radius: 10px !important;
+        color: #c084fc !important;
+        transition: all 0.25s ease !important;
+        margin-top: 0.25rem !important;
+        margin-left: 0.25rem !important;
+    }
+
+    button[data-testid="stSidebarCollapseButton"]:hover,
+    button[data-testid="stSidebarExpandButton"]:hover,
+    header[data-testid="stHeader"] button:hover {
+        background: rgba(124, 58, 237, 0.35) !important;
+        border-color: rgba(192, 132, 252, 0.6) !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 15px rgba(124, 58, 237, 0.4) !important;
+    }
 
     /* Global Body Overrides */
     html, body, [class*="css"], .stApp {
@@ -363,10 +392,16 @@ def get_agent():
 agent = get_agent()
 
 # --- 4. SIDEBAR NAVIGATION ---
-st.sidebar.markdown("<br><br>", unsafe_allow_html=True)
+st.sidebar.markdown("""
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; padding-top: 0.25rem;">
+    <h3 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: #f3f4f6; display: flex; align-items: center; gap: 8px;">
+        🧠 SearchMind AI
+    </h3>
+</div>
+""", unsafe_allow_html=True)
 
-# "New Chat" button: Resets the thread ID, clearing the active session history
-if st.sidebar.button("New Chat ➕"):
+# "New Chat" button: ChatGPT-styled primary action button
+if st.sidebar.button("➕ New Chat"):
     st.session_state.chat_counter += 1
     new_thread_id = str(uuid.uuid4())
     new_chat_name = f"Chat Session #{st.session_state.chat_counter}"
@@ -375,10 +410,10 @@ if st.sidebar.button("New Chat ➕"):
     st.session_state.chat_name = new_chat_name
     st.rerun()
 
-st.sidebar.markdown("---")
+st.sidebar.markdown("<hr style='border-color: rgba(255, 255, 255, 0.08); margin: 0.85rem 0;'>", unsafe_allow_html=True)
 
 # Render active chats list with individual delete buttons
-st.sidebar.markdown("<div class='sidebar-title'>💬 Active Sessions</div>", unsafe_allow_html=True)
+st.sidebar.markdown("<div class='sidebar-title'>💬 Chat History</div>", unsafe_allow_html=True)
 
 for t_id, name in list(st.session_state.chats.items()):
     col1, col2 = st.sidebar.columns([4, 1])
