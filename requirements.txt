@@ -1,0 +1,12 @@
+langchain
+langchain-core
+langchain-community
+pydantic
+langchain-google-genai
+duckduckgo-search
+requests
+ipykernel
+ddgs
+google-generativeai
+langgraph
+streamlit

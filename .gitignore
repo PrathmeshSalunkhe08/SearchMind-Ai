@@ -1,0 +1,20 @@
+# Local configuration keys
+.env
+
+# Virtual environments
+.venv/
+.venv-1/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# System files
+.DS_Store
+Thumbs.db
