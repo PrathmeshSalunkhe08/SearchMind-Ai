@@ -64,9 +64,9 @@ st.markdown("""
     [data-testid="stManageAppButton"] {display: none !important; visibility: hidden !important; height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;}
     div[class*="stAppViewerToolbar"] {display: none !important; visibility: hidden !important;}
     div[class*="manageApp"] {display: none !important; visibility: hidden !important;}
+    div[class*="viewerBadge"] {display: none !important; visibility: hidden !important;}
     .stDeployButton {display: none !important;}
     button[title="View app in Streamlit"] {display: none !important;}
-    div[class*="viewerBadge"] {display: none !important;}
     div[data-testid="stToolbarActions"] {display: none !important;}
 
     /* Hide Streamlit default small collapse/expand arrow buttons to use custom toggle */
@@ -164,23 +164,39 @@ st.markdown("""
         }
     }
 
-    /* Top Main Page Navigation Button */
-    button[key="main_top_nav_btn"] {
-        background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
-        color: #ffffff !important;
-        border: 1px solid #c084fc !important;
-        border-radius: 12px !important;
-        font-weight: 600 !important;
-        padding: 0.5rem 1.2rem !important;
-        box-shadow: 0 4px 20px rgba(124, 58, 237, 0.6) !important;
-        margin-bottom: 1rem !important;
-        cursor: pointer !important;
+    /* Expander card styling & horizontal row locking for mobile history */
+    div[data-testid="stExpander"] {
+        background: rgba(15, 12, 30, 0.85) !important;
+        border: 1px solid rgba(124, 58, 237, 0.3) !important;
+        border-radius: 16px !important;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4) !important;
+        backdrop-filter: blur(20px) !important;
+        margin-bottom: 1.5rem !important;
     }
 
-    button[key="main_top_nav_btn"]:hover {
-        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
-        border-color: #ffffff !important;
-        box-shadow: 0 0 25px rgba(192, 132, 252, 0.9) !important;
+    div[data-testid="stExpander"] div[data-testid="stHorizontalBlock"] {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 8px !important;
+        margin-bottom: 6px !important;
+    }
+
+    div[data-testid="stExpander"] div[data-testid="column"]:first-child {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+    }
+
+    div[data-testid="stExpander"] div[data-testid="column"]:last-child {
+        flex: 0 0 46px !important;
+        min-width: 46px !important;
+    }
+
+    div[data-testid="stExpander"] div[data-testid="column"] button {
+        width: 100% !important;
+        margin-top: 0 !important;
     }
 
     /* Title Block Header */
@@ -565,7 +581,7 @@ if st.session_state.sidebar_open:
                 st.rerun()
                 
         for t_id, name in list(st.session_state.chats.items()):
-            hc1, hc2 = st.columns([4, 1])
+            hc1, hc2 = st.columns([5, 1])
             is_active = (t_id == st.session_state.thread_id)
             display_label = f"💬 {name}" + (" 📍 (Active)" if is_active else "")
             
