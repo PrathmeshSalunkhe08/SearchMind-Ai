@@ -4,6 +4,7 @@
 
 **A Next-Generation Stateful Cognitive AI Agent & Multi-Tool Intelligence Workspace**
 
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Streamlit_Cloud-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://searchmind-ai-agent.streamlit.app)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![LangGraph](https://img.shields.io/badge/LangGraph-Stateful_Graph-FF6F61?style=for-the-badge&logo=langchain&logoColor=white)](https://www.langchain.com/langgraph)
 [![LangChain Core](https://img.shields.io/badge/LangChain-v0.3-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)](https://www.langchain.com/)
@@ -13,9 +14,14 @@
 [![Author: Prathmesh Salunkhe](https://img.shields.io/badge/Author-Prathmesh_Salunkhe-7c3aed?style=for-the-badge&logo=github&logoColor=white)](https://github.com/PrathmeshSalunkhe08)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
-[Features](#-key-features--integrated-tools) • [Architecture](#-architecture--react-workflow) • [Installation](#-installation--setup) • [Usage](#-running-the-application) • [Author & Copyright](#-author--copyright)
+[🚀 Live App Demo](https://searchmind-ai-agent.streamlit.app) • [Features](#-key-features--integrated-tools) • [Architecture](#-architecture--react-workflow) • [Installation](#-installation--setup) • [Usage](#-running-the-application) • [Author & Copyright](#-author--copyright)
 
 </div>
+
+---
+
+## 🌐 Live Application
+> **Try the deployed application live here:** [https://searchmind-ai-agent.streamlit.app](https://searchmind-ai-agent.streamlit.app)
 
 ---
 
