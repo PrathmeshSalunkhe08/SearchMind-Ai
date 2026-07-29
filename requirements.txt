@@ -11,3 +11,4 @@ google-generativeai
 langgraph
 streamlit
 python-dotenv
+arxiv

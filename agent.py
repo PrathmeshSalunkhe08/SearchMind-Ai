@@ -1,10 +1,88 @@
 import os
 import sys
+import math
+import requests
+import arxiv
 from dotenv import load_dotenv
 from langchain_community.utilities import GoogleSerperAPIWrapper
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.tools import tool
 from langchain.agents import create_agent
 from langgraph.checkpoint.memory import MemorySaver
+
+# --- TOOLS DEFINITION ---
+@tool
+def calculator(expression: str) -> str:
+    """Calculates the result of a mathematical expression.
+    Input should be a valid mathematical expression string (e.g. '2 + 2', '15 * 8', '100 / 4', '2**10', 'sqrt(144)').
+    """
+    try:
+        allowed_names = {
+            'abs': abs, 'round': round, 'pow': pow, 'min': min, 'max': max,
+            'sqrt': math.sqrt, 'sin': math.sin, 'cos': math.cos, 'tan': math.tan,
+            'log': math.log, 'pi': math.pi, 'e': math.e
+        }
+        result = eval(expression, {'__builtins__': None}, allowed_names)
+        return str(result)
+    except Exception as e:
+        return f"Error evaluating expression: {e}"
+
+@tool
+def arxiv_search(query: str) -> str:
+    """Searches scientific research papers on arXiv.
+    Input should be a search query topic or research domain (e.g. 'quantum computing', 'transformer models', 'artificial intelligence').
+    Returns paper titles, authors, summaries, and PDF links for top relevant research papers.
+    """
+    try:
+        client = arxiv.Client()
+        search = arxiv.Search(query=query, max_results=3, sort_by=arxiv.SortCriterion.Relevance)
+        results = list(client.results(search))
+        if not results:
+            return 'No research papers found for the query.'
+        output = []
+        for i, paper in enumerate(results, 1):
+            authors = ', '.join(a.name for a in paper.authors[:3])
+            paper_info = (
+                f"Paper {i}:\n"
+                f"Title: {paper.title}\n"
+                f"Authors: {authors}\n"
+                f"Published: {paper.published.strftime('%Y-%m-%d')}\n"
+                f"Summary: {paper.summary[:300]}...\n"
+                f"PDF Link: {paper.pdf_url}"
+            )
+            output.append(paper_info)
+        return '\n\n'.join(output)
+    except Exception as e:
+        return f"Error searching arXiv: {e}"
+
+@tool
+def get_weather(city: str) -> str:
+    """Fetches real-time weather information for a given city name.
+    Input should be a city name (e.g. 'Mumbai', 'London', 'New York', 'Tokyo').
+    Returns current temperature in °C, humidity percentage, and wind speed.
+    """
+    try:
+        geo_url = f"https://geocoding-api.open-meteo.com/v1/search?name={city}&count=1&language=en&format=json"
+        geo_res = requests.get(geo_url, timeout=5).json()
+        if not geo_res.get("results"):
+            return f"Could not find location coordinates for '{city}'."
+        
+        loc = geo_res["results"][0]
+        lat, lon = loc["latitude"], loc["longitude"]
+        city_name = loc.get("name", city)
+        country = loc.get("country", "")
+
+        weather_url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m"
+        w_res = requests.get(weather_url, timeout=5).json()
+        current = w_res.get("current", {})
+
+        temp = current.get("temperature_2m")
+        humidity = current.get("relative_humidity_2m")
+        wind = current.get("wind_speed_10m")
+
+        return f"Weather in {city_name}, {country}: Temperature: {temp}°C, Humidity: {humidity}%, Wind Speed: {wind} km/h."
+    except Exception as e:
+        return f"Error fetching weather data: {e}"
 
 def clean_content(content):
     if isinstance(content, list):
@@ -31,7 +109,7 @@ def main():
         print("Error: SERPER_API_KEY not found in .env file.", file=sys.stderr)
         sys.exit(1)
 
-    print("Initializing Search Tool...")
+    print("Initializing Tools (Search, Calculator, arXiv, Weather)...")
     search = GoogleSerperAPIWrapper()
 
     print("Initializing Gemini Model (gemini-3.5-flash-lite)...")
@@ -41,18 +119,17 @@ def main():
     )
 
     print("Creating Agent with Memory checkpointer...")
-    # Initialize MemorySaver checkpointer
     memory = MemorySaver()
 
     # create_agent compiles a LangGraph agent that automatically executes tool calling
     agent = create_agent(
         model=llm,
-        tools=[search.run],
+        tools=[search.run, calculator, arxiv_search, get_weather],
         system_prompt=(
-            "You are a helpful chatbot assistant. "
-            "You have access to a Google Search tool to answer real-time questions "
-            "and factual information about current events. Always search if you need "
-            "up-to-date facts (e.g. weather, news, current prices)."
+            "You are a helpful AI research assistant. "
+            "You have access to Google Search for real-time web news and prices, "
+            "a Calculator for math calculations, an arXiv Search tool for scientific papers, "
+            "and a Weather tool for real-time weather details."
         ),
         checkpointer=memory
     )
