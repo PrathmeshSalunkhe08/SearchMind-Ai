@@ -31,7 +31,7 @@ def calculator(expression: str) -> str:
 def arxiv_search(query: str) -> str:
     """Searches scientific research papers on arXiv.
     Input should be a search query topic or research domain (e.g. 'quantum computing', 'transformer models', 'artificial intelligence').
-    Returns paper titles, authors, summaries, and PDF links for top relevant research papers.
+    Returns paper titles, authors, published dates, category, formatted abstract summary, and direct PDF download links.
     """
     try:
         client = arxiv.Client()
@@ -41,17 +41,27 @@ def arxiv_search(query: str) -> str:
             return 'No research papers found for the query.'
         output = []
         for i, paper in enumerate(results, 1):
-            authors = ', '.join(a.name for a in paper.authors[:3])
-            paper_info = (
-                f"Paper {i}:\n"
-                f"Title: {paper.title}\n"
-                f"Authors: {authors}\n"
-                f"Published: {paper.published.strftime('%Y-%m-%d')}\n"
-                f"Summary: {paper.summary[:300]}...\n"
-                f"PDF Link: {paper.pdf_url}"
+            author_names = [a.name for a in paper.authors[:3]]
+            authors_str = ', '.join(author_names)
+            if len(paper.authors) > 3:
+                authors_str += ' et al.'
+            clean_summary = ' '.join(paper.summary.replace('\n', ' ').split())
+            if len(clean_summary) > 350:
+                clean_summary = clean_summary[:350] + '...'
+            pub_date = paper.published.strftime('%B %d, %Y')
+            category = getattr(paper, 'primary_category', 'Research')
+            paper_id = paper.entry_id.split('/')[-1]
+
+            formatted_paper = (
+                f"### 📄 {i}. {paper.title.strip()}\n"
+                f"- **👥 Authors:** {authors_str}\n"
+                f"- **📅 Published:** {pub_date} | **🏷️ Category:** `{category}`\n"
+                f"- **🔗 PDF Document:** [{paper_id}.pdf]({paper.pdf_url})\n\n"
+                f"**📝 Abstract Summary:**\n"
+                f"> {clean_summary}"
             )
-            output.append(paper_info)
-        return '\n\n'.join(output)
+            output.append(formatted_paper)
+        return '\n\n---\n\n'.join(output)
     except Exception as e:
         return f"Error searching arXiv: {e}"
 
