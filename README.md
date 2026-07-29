@@ -32,12 +32,13 @@ Encapsulated within a custom-designed **Glassmorphic Space-Themed Dashboard**, S
 ## ✨ Key Features & Integrated Tools
 
 ### 🧰 Integrated Tools
-SearchMind AI automatically selects and executes from **4 distinct tools**:
+SearchMind AI automatically selects and executes from **5 distinct tools**:
 
 1. 🔍 **Real-Time Web Search (`search.run`)**: Powered by Google Serper API to fetch up-to-date news, current market prices, and live internet facts.
 2. 🧮 **Mathematical Calculator (`calculator`)**: Evaluates mathematical expressions, trigonometric functions, logarithms, powers, and roots safely.
 3. 📄 **Executive arXiv Research Search (`arxiv_search`)**: Searches scientific research papers with publication-grade Markdown formatting (headers, metadata badges, formatted abstracts, and direct PDF download links).
 4. 🌤️ **Real-Time Weather Tool (`get_weather`)**: Resolves city names via Open-Meteo Geocoding and fetches live temperature (°C), humidity (%), and wind speed.
+5. 🌐 **URL Web Page Reader & Summarizer (`summarize_url`)**: Powered by Trafilatura to fetch, extract, and read full main text content from any website URL.
 
 ### 🧠 Persistent Stateful Thread Memory
 * **LangGraph Pregel Graph Execution**: Built on modern graph architecture (`create_agent`) rather than legacy linear chains.

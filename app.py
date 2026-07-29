@@ -5,6 +5,7 @@ import uuid
 import math
 import requests
 import arxiv
+import trafilatura
 from dotenv import load_dotenv
 from langchain_community.utilities import GoogleSerperAPIWrapper
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -96,6 +97,36 @@ def get_weather(city: str) -> str:
         return f"Weather in {city_name}, {country}: Temperature: {temp}°C, Humidity: {humidity}%, Wind Speed: {wind} km/h."
     except Exception as e:
         return f"Error fetching weather data: {e}"
+
+@tool
+def summarize_url(url: str) -> str:
+    """Fetches, extracts, and summarizes the main text content of any website or URL.
+    Input should be a valid web page URL string (e.g. 'https://en.wikipedia.org/wiki/Artificial_intelligence' or 'https://news.ycombinator.com').
+    Returns extracted readable text content from the web page.
+    """
+    try:
+        downloaded = trafilatura.fetch_url(url)
+        if not downloaded:
+            return f"Error: Could not fetch content from URL '{url}'. Please check if the URL is valid and accessible."
+        
+        extracted_text = trafilatura.extract(downloaded, include_comments=False, include_tables=True, no_fallback=False)
+        if not extracted_text:
+            return f"Error: No readable text content could be extracted from '{url}'."
+        
+        clean_text = ' '.join(extracted_text.split())
+        truncated_text = clean_text[:3500]
+        if len(clean_text) > 3500:
+            truncated_text += " ... [Content truncated for length]"
+            
+        return (
+            f"### 🌐 Extracted Content from URL:\n"
+            f"**URL:** [{url}]({url})\n\n"
+            f"```text\n"
+            f"{truncated_text}\n"
+            f"```"
+        )
+    except Exception as e:
+        return f"Error extracting content from URL: {e}"
 
 # --- 1. CONFIGURATION & STYLING ---
 if "sidebar_open" not in st.session_state:
@@ -557,7 +588,7 @@ def get_agent():
     
     return create_agent(
         model=llm,
-        tools=[search.run, calculator, arxiv_search, get_weather],
+        tools=[search.run, calculator, arxiv_search, get_weather, summarize_url],
         system_prompt=(
             "You are a helpful, professional AI search and research assistant.\n\n"
             "Formatting Rules:\n"
@@ -565,7 +596,7 @@ def get_agent():
             "2. Separate different topics, stories, or items with two newlines (a double enter) to create clear visual spacing.\n"
             "3. Use bold bulleted list formats (e.g. '* **Item Title**: Description text') for lists.\n"
             "4. Keep paragraphs short and concise so they are extremely readable.\n"
-            "5. You have access to Search, Calculator, arXiv Research, and Real-Time Weather tools. Use the appropriate tool whenever requested."
+            "5. You have access to Search, Calculator, arXiv Research, Weather, and URL Summarizer tools (`summarize_url`). Use the appropriate tool whenever requested."
         ),
         checkpointer=st.session_state.memory
     )

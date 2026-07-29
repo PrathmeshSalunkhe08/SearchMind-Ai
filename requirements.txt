@@ -12,3 +12,4 @@ langgraph
 streamlit
 python-dotenv
 arxiv
+trafilatura
